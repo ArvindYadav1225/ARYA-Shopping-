@@ -1,0 +1,461 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:fragment="layout(content)">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+
+<title>Yadav Shopping Application</title>
+
+<style>
+.item-row {
+    display: flex;
+    align-items: center;
+}
+
+.product-name {
+    display: inline-block;
+    width: 205px;          /* 🔥 FIXED column for names */
+    font-family: Inter;
+    font-size: 15px;
+    font-weight: 540;
+    color: black;
+}
+
+.product-price {
+    font-family: Inter;
+    font-size: 15px;
+    font-weight: 540;
+    color: blue;
+}
+
+ .qty-container {
+            width: 130px;
+        }
+
+        .qty-btn {
+            width: 15px;
+            height: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            border-radius: 0;
+        }
+
+        .qty-input {
+            width: 30px;
+            height: 20px;
+            text-align: center;
+            font-weight: 600;
+            border-left: 0;
+            border-right: 0;
+        }
+
+        .qty-btn:first-child {
+            border-top-left-radius: 6px;
+            border-bottom-left-radius: 6px;
+        }
+
+        .qty-btn:last-child {
+            border-top-right-radius: 6px;
+            border-bottom-right-radius: 6px;
+        }
+.part-1{
+ width:calc(100%*1 / 14);
+ flex:0 0 auto;
+}
+.part-2{
+ width:calc(100%*2 / 14);
+ flex:0 0 auto;
+}
+
+/* Input */
+.search-input {
+    height: 48px;
+    padding-left: 45px;
+    border-radius: 24px;
+    border: 1px solid #dfe1e5;
+    font-size: 16px;
+}
+
+.search-input:focus {
+    box-shadow: 0 1px 6px rgba(32,33,36,.28);
+    border-color: transparent;
+}
+
+/* Search Icon */
+.search-icon {
+    position: absolute;
+    top: 50%;
+    left: 15px;
+    transform: translateY(-50%);
+    color: #9aa0a6;
+    font-size: 18px;
+}
+
+/* Dropdown */
+/* =========================
+   SEARCH WRAPPER
+========================= */
+.search-wrapper {
+    position: relative;
+    gap: 8px;
+}
+
+/* =========================
+   SEARCH INPUT
+========================= */
+.search-input {
+    padding-left: 42px;
+    height: 44px;
+    border-radius: 50px;
+}
+
+/* =========================
+   SEARCH ICON
+========================= */
+.search-icon {
+    position: absolute;
+    left: 14px;
+    color: #70757a;
+    pointer-events: none;
+    z-index: 2;
+}
+
+.search-dropdown {
+    list-style: none;
+    padding: 8px 0;
+    margin: 0;
+
+    position: absolute;
+    top: 100%;              /* 👈 OPEN DOWN */
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+
+    background: #fff;
+    border: 1px solid #dfe1e5;
+    border-top: none;
+    border-radius: 0 0 24px 24px;
+
+    box-shadow: 0 4px 6px rgba(32,33,36,.28);
+
+    opacity: 0;
+    transform: translateY(-6px);
+    transition: all 0.15s ease-in-out;
+}
+
+/* SHOW DROPDOWN */
+.search-dropdown.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* =========================
+   DROPDOWN ITEMS
+========================= */
+.search-dropdown li {
+    display: flex;
+    align-items: center;
+    padding: 10px 16px;
+    cursor: pointer;
+    font-size: 15px;
+}
+
+/* HISTORY ICON */
+.search-dropdown li i {
+    margin-right: 12px;
+    color: #70757a;
+}
+
+/* HOVER EFFECT */
+.search-dropdown li:hover {
+    background-color: #f1f3f4;
+}
+
+/* Connect borders */
+.search-input.active {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+body{background:#eef3f7;
+
+
+
+}
+
+
+</style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<div class="container-fluid bg-light">
+<div class="row align-items-center">
+
+<img th:src="@{/images/yadavshoppinglogo.png}" style="height:60px;width:160px;background:transparent" class="bg-light ">
+
+
+<div class="col d-flex justify-content-center">
+    <form th:action="@{/search}" method="get" class="w-100 d-flex justify-content-center">
+        
+        <div class="search-wrapper position-relative d-flex align-items-center w-50">
+
+            <!-- Search Icon -->
+            <i class="bi bi-search search-icon"></i>
+
+            <!-- Input -->
+            <input type="search"
+                   id="searchInput"
+                   class="form-control search-input"
+                   placeholder="Search"
+                   name="searchValue"
+                   autocomplete="off">
+
+            <!-- Search Button -->
+            <button type="submit" class="btn btn-primary ms-2">
+                Search
+            </button>
+
+            <!-- Dropdown -->
+            <ul id="searchDropdown" class="search-dropdown d-none"></ul>
+
+        </div>
+    </form>
+</div>
+
+  
+
+
+<div class="col-auto">
+<form th:if="${session.mobile==null}" th:action="@{/login}" method="get">
+<button class="btn bg-light"><i class="bi bi-person-circle"></i> Login</button>
+</form>
+
+<div th:unless="${session.mobile==null}" class="position-relative">
+<i class="bi bi-cart3 fs-3"></i>
+<span class="badge bg-danger position-absolute top-0 start-100 translate-middle" th:if="${session.user!=null}" th:text="${#lists.size(session.user.cartItems)}"></span>
+<span class="badge bg-danger position-absolute top-0 start-100 translate-middle" th:unless="${session.user!=null}" >0</span>
+
+</div>
+</div>
+
+<div class="col-auto" th:if="${session.mobile!=null}">
+<i class="bi bi-bell-fill fs-4"></i>
+</div>
+
+<div class="col-auto">
+<form th:if="${session.mobile==null}" th:action="@{/signup}" method="get">
+<button class="btn bg-light "><i class="bi bi-person-circle"></i> Signup</button>
+</form>
+
+<button class="btn bg-light" th:unless="${session.mobile==null}"><i class="bi bi-three-dots-vertical fs-1" ></i></button>
+
+</div>
+
+</div>
+</div>
+
+   
+  
+   
+   <div  style="margin:0 20% 0  ;padding-top:2%">
+<div th:each="cartItem : ${cartItems}"
+     th:if="${cartItem.product != null}"
+     class="bg-light row">
+
+
+
+    <!-- Image -->
+   <div class="col-2 bg-light main-div">
+    <img class="img-fluid"
+         th:src="@{/images/{img}.jpg(img=${cartItem.product.image})}"
+         style="height:50px;width:60px;">
+
+    &nbsp;&nbsp;&nbsp;<i class="bi bi-trash"
+   th:onclick="|removeItemsFromCart(${cartItem.product.id})|">
+</i><br>
+    <div class="qty-container">
+        <div class="input-group">
+
+            <button class="btn btn-outline-secondary qty-btn"
+                    onclick="decrementItems(this)">
+                −
+            </button>
+
+            <input type="text"
+                   class="form-control qty-input text-center"
+                   value="1"
+                   readonly
+                   id="quantityValue">
+
+            <button class="btn btn-outline-secondary qty-btn"
+                    onclick="incrementItems(this)">
+                +
+            </button>
+
+        </div>
+    </div>
+</div>
+
+
+    <!-- Product Details -->
+    <div class="col-6 bg-light">
+        <span
+            th:text="${cartItem.product.name}" style="font-family: Inter;font-size: 15px;font-weight: 1000"></span><br>
+             <span style="background-color:green;justify-content:center;color:white;padding-left:10px;padding-right:5px;border-radius:2px;"> 4.5★</span>
+        <div class="price">
+            <span 
+                  th:text="'₹' + ${cartItem.product.price}" style="font-family: Inter;font-size:17px;font-weight:1000"id="productPrice"></span>
+
+            <span class="text-muted text-decoration-line-through ms-2"
+                  th:text="'₹' + ${cartItem.product.oldprice}" style="font-family: Inter;font-size: 15px;font-weight: 540" id="productoldPrice"></span>
+
+            <span class="text-success ms-2"
+                  th:text="${cartItem.product.discount}" style="font-family: Inter;font-size: 15px;font-weight: 1200"></span>
+        </div>
+
+        <span class="text-muted" style="font-family: Inter;font-size: 15px;font-weight: 540">Protect Promise Fees ₹25</span><br><hr>
+    </div>
+    
+    <!-- Empty / Actions -->
+    <div class="col-3">
+       
+   <span style="font-family: Inter;font-size: 15px;font-weight: 540"> Delivery Date 26 January</span>
+    
+    </div>
+
+</div><br>
+<div class="bg-light my-1" style="border:1px solid dark-gray">
+   <span style="margin-left:15px;font-family: Arial black;font-size: 14px"> Price Details</span><br>
+ <span style="margin-left:15px;font-family: Inter;font-size: 18px;font-weight:1000">Total price</span><a th:href="@{#}" th:text="|(${#lists.size(cartItems)} Items)|" style="margin-left:15px;font-family: Inter;font-size: 15px;font-weight: 1000;text-decoration:none" onclick="showpricedetails()"></a>
+
+ <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="font-family: Inter;font-size: 18px;font-weight: 1000" th:text="₹+${totalOldPrice}"></span><br>
+ <div style="margin-left:22px;display:none" id="pricedetails">
+  
+  <div th:each="cartItem : ${cartItems}" 
+      >
+      
+     <div class="item-row" >
+   <i class="bi bi-dot"></i> <span class="product-name" th:text="${cartItem.product.name}"></span>
+    <span class="product-price" th:text="'₹' + ${cartItem.product.price}"></span>
+</div>
+
+</div>
+    <span style="margin-left:-10px;font-family: Inter;font-size: 18px;font-weight: 1000">Total &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span  style="font-family: Inter;font-size: 18px;font-weight:1000" th:text="₹+${totalOldPrice}"></span><br>
+ 
+  </div>
+<span style="color:green;margin-left:15px;font-family: Inter;font-size: 16px;font-weight: 1000">Discount &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span ><span style="margin-left:15px;font-family: Inter;font-size: 18px;font-weight:1000;color:green" th:text="'- '+₹+${{totalDiscount}}"></span><br>
+<span style="margin-left:15px;font-family: Inter;font-size: 15px;font-weight: 540">Protect Promice Fees  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span ><span style="margin-left:15px;font-family: Inter;font-size: 15px;font-weight: 1000"  th:text="${'+ ₹'+ (#lists.size(cartItems)*25.0)}"></span><hr>
+<span style="margin-left:15px;font-family: Arial black;font-size: 15px;font-weight: 540">Total Payable Amount &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="margin-left:15px;font-family: Inter;font-size: 18px;font-weight: 1000" th:text="₹+${totalPrice+ #lists.size(cartItems)*25.0}"></span><br>
+<span style="color:green;margin-left:15px;font-family: Inter;font-size: 14px;"> Congratulation You will save <span th:text="₹+${totalOldPrice-totalPrice-300}"></span> on this order</span><br>
+<form th:action="@{/buyProducts}"><button class="btn btn-warning w-100 mt-2"><i class="bi bi-lightning"></i> Buy Now</button></form><br><br>
+</div>
+</div>
+      
+    
+
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script type="text/javascript">
+function removeItemsFromCart(productId){
+    window.location.href =
+        '/removeItemFromCart?productId=' + encodeURIComponent(productId);
+}
+function decrementItems(btn){
+	
+	
+	
+	
+}
+function incrementItems(btn) {
+    // find parent main-div
+    const ele = btn.closest('.main-div');
+
+    // find input inside this main-div
+    const productQuantity = ele.querySelector('#quantityValue');
+
+    let currentValue = parseInt(productQuantity.value) || 0;
+    productQuantity.value = currentValue + 1;
+}
+function showpricedetails(){
+	let ele=document.getElementById("pricedetails");
+	 const isHidden = window.getComputedStyle(ele).display === "none";
+
+	    ele.style.display = isHidden ? "block" : "none";
+	
+}
+const suggestions = /*[[${searchhistory}]]*/ [];
+
+const input = document.getElementById("searchInput");
+const dropdown = document.getElementById("searchDropdown");
+
+/* =========================
+   SHOW ALL ON CLICK
+========================= */
+input.addEventListener("focus", showAll);
+input.addEventListener("click", showAll);
+
+/* =========================
+   FILTER ON TYPE
+========================= */
+input.addEventListener("keyup", function () {
+    const value = this.value.toLowerCase();
+    dropdown.innerHTML = "";
+
+    const list = value === ""
+        ? suggestions
+        : suggestions.filter(item =>
+            item.toLowerCase().includes(value)
+          );
+
+    if (list.length === 0) {
+        hideDropdown();
+        return;
+    }
+
+    populate(list);
+    showDropdown();
+});
+
+/* =========================
+   FUNCTIONS
+========================= */
+function showAll() {
+    if (suggestions.length === 0) return;
+
+    dropdown.innerHTML = "";
+    populate(suggestions);
+    showDropdown();
+}
+
+function populate(list) {
+    list.forEach(item => {
+        const li = document.createElement("li");
+        li.innerHTML = `<i class="bi bi-clock-history"></i>${item}`;
+
+        li.onclick = () => {
+            input.value = item;
+            hideDropdown();
+        };
+
+        dropdown.appendChild(li);
+    });
+}
+
+
+
+	// Add a dummy history state so popstate triggers correctly
+	
+	
+
+</script>
+
+</body>
+</html>

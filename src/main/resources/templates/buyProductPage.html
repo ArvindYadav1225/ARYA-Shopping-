@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:fragment="layout(content)">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+
+<title>Yadav Shopping Application</title>
+
+<style>
+.payment-option{
+border:2px solid #dee2e6;
+border-radius:12px;
+padding:15px;
+cursor:pointer;
+transition:0.3s;
+}
+
+
+.payment-option:hover{
+border-color:#0d6efd;
+background:#f1f7ff;
+}
+
+
+/* Highlight selected row */
+.payment-option input:checked ~ .content{
+color:#0d6efd;
+font-weight:600;
+}
+
+
+.payment-option input:checked{
+accent-color:#0d6efd;
+}
+
+
+.payment-icon{
+font-size:26px;
+color:#0d6efd;
+}
+ .form-container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 30px;
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+        }
+        .input-group-text {
+            background-color: #e9ecef;
+        }
+        .form-control:focus {
+            border-color: #0d6efd;
+            box-shadow: 0 0 0 0.2rem rgba(13,110,253,.25);
+        }
+.item-row {
+    display: flex;
+    align-items: center;
+}
+
+.product-name {
+    display: inline-block;
+    width: 205px;          /* 🔥 FIXED column for names */
+    font-family: Inter;
+    font-size: 15px;
+    font-weight: 540;
+    color: black;
+}
+
+.product-price {
+    font-family: Inter;
+    font-size: 15px;
+    font-weight: 540;
+    color: blue;
+}
+
+ .qty-container {
+            width: 130px;
+        }
+
+        .qty-btn {
+            width: 15px;
+            height: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            border-radius: 0;
+        }
+
+        .qty-input {
+            width: 30px;
+            height: 20px;
+            text-align: center;
+            font-weight: 600;
+            border-left: 0;
+            border-right: 0;
+        }
+
+        .qty-btn:first-child {
+            border-top-left-radius: 6px;
+            border-bottom-left-radius: 6px;
+        }
+
+        .qty-btn:last-child {
+            border-top-right-radius: 6px;
+            border-bottom-right-radius: 6px;
+        }
+.part-1{
+ width:calc(100%*1 / 14);
+ flex:0 0 auto;
+}
+.part-2{
+ width:calc(100%*2 / 14);
+ flex:0 0 auto;
+}
+
+/* Input */
+
+body{background:#eef3f7;
+
+
+
+}
+
+
+</style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<div class="container-fluid bg-light">
+<div class="row align-items-center">
+
+<img th:src="@{/images/yadavshoppinglogo.png}" style="height:60px;width:160px;background:transparent" class="bg-light ">
+
+
+<div class="col d-flex justify-content-center">
+
+            <!-- Search Icon -->
+           
+       
+            
+        
+</div>
+
+  
+
+
+<div class="col-auto">
+<form th:if="${session.mobile==null}" th:action="@{/login}" method="get">
+<button class="btn bg-light"><i class="bi bi-person-circle"></i> Login</button>
+</form>
+
+<div th:unless="${session.mobile==null}" class="position-relative">
+<i class="bi bi-cart3 fs-3"></i>
+<span class="badge bg-danger position-absolute top-0 start-100 translate-middle" th:if="${session.user!=null}" th:text="${#lists.size(session.user.cartItems)}"></span>
+<span class="badge bg-danger position-absolute top-0 start-100 translate-middle" th:unless="${session.user!=null}" >0</span>
+
+</div>
+</div>
+
+<div class="col-auto" th:if="${session.mobile!=null}">
+<i class="bi bi-bell-fill fs-4"></i>
+</div>
+
+<div class="col-auto">
+<form th:if="${session.mobile==null}" th:action="@{/signup}" method="get">
+<button class="btn bg-light "><i class="bi bi-person-circle"></i> Signup</button>
+</form>
+
+<button class="btn bg-light" th:unless="${session.mobile==null}"><i class="bi bi-three-dots-vertical fs-1" ></i></button>
+
+</div>
+
+</div>
+</div>
+
+   
+  
+   
+  
+
+   
+        
+       
+  
+
+<div class="container">
+    <div class="form-container">
+        <h3 th:if="${address==null}" class="mb-4 text-center text-primary">Delivery Location</h3>
+        <form th:action="@{/paymentMethod}" method ="get">
+            <!-- Complete Location -->
+            <div  th:if="${address==null}" class="mb-3">
+              
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-geo-alt-fill"></i></span>
+                    <textarea class="form-control" id="location" placeholder="Enter Complete Location" required name="address"></textarea>
+                </div>
+            </div>
+
+            <!-- House No / Building Name -->
+            <div th:if="${address==null}" class="mb-3">
+                
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-house-door-fill"></i></span>
+                    <input type="text" class="form-control" id="house" placeholder="Enter house no or Building Name" required name="houseNo">
+                </div>
+            </div>
+
+            <!-- City -->
+            <div th:if="${address==null}" class="mb-3">
+            
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-building"></i></span>
+                    <input type="text" class="form-control" id="city" placeholder="Enter city" required name="city">
+                </div>
+            </div>
+
+            <!-- State -->
+            <div th:if="${address==null}"class="mb-3">
+              
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-map-fill"></i></span>
+                    <input type="text" class="form-control" id="state" placeholder="Enter state" required name="state">
+                </div>
+            </div>
+
+            <!-- Submit Button -->
+     
+       <br>
+        <h4 class="text-start mb-4 text-primary">
+<i class="bi bi-credit-card"></i> Select Payment Method
+</h4>
+
+
+
+
+
+<!-- UPI -->
+<label class="payment-option d-flex align-items-center justify-content-between mb-3">
+
+
+<div class="d-flex align-items-center gap-3 content">
+<i class="bi bi-phone payment-icon"></i>
+<div>
+<h6 class="mb-0">UPI</h6>
+<small>Google Pay, PhonePe, Paytm</small>
+</div>
+</div>
+
+
+<input type="radio" name="paymentMethod" value="upi" required>
+
+
+</label>
+
+
+<!-- CARD -->
+<label class="payment-option d-flex align-items-center justify-content-between mb-3">
+
+
+<div class="d-flex align-items-center gap-3 content">
+<i class="bi bi-credit-card-2-front payment-icon"></i>
+<div>
+<h6 class="mb-0">Credit / Debit Card</h6>
+<small>Visa, MasterCard, RuPay</small>
+</div>
+</div>
+
+
+<input type="radio" name="paymentMethod" value="debitCard">
+
+<input type="hidden" name="productName" th:value="${productName}">
+</label>
+
+
+<!-- NET BANKING -->
+<label class="payment-option d-flex align-items-center justify-content-between mb-3">
+
+
+<div class="d-flex align-items-center gap-3 content">
+<i class="bi bi-bank payment-icon"></i>
+<div>
+<h6 class="mb-0">Net Banking</h6>
+<small>All Major Banks Supported</small>
+</div>
+</div>
+
+
+<input type="radio" name="paymentMethod" value="netBanking">
+
+
+</label>
+
+
+<!-- COD -->
+<label class="payment-option d-flex align-items-center justify-content-between mb-4">
+
+
+<div class="d-flex align-items-center gap-3 content">
+<i class="bi bi-cash-stack payment-icon"></i>
+<div>
+<h6 class="mb-0">Cash On Delivery</h6>
+
+<small>Pay when product arrives</small>
+</div>
+</div>
+
+
+<input type="radio" name="paymentMethod" value="cod">
+
+
+</label>
+<div th:if=${address!=null}>
+<span style="font-weight:bold">Delivery Location: </span ><span style="margin-left:7px;font-family: Inter;font-size: 16px" th:text="${address}"> </span><span style="margin-left:60%"><a th:href="@{/#}" style="font-family: Inter;font-size: 16px">change Location</a></span>
+</div>
+<br>
+<!-- BUTTON -->
+<div class="d-grid">
+<button class="btn btn-primary btn-lg">
+<i class="bi bi-lock-fill me-2"></i> Continue to Pay
+</button>
+</div>
+
+
+</form>
+        
+    </div>
+    
+</div>
+
+
+
+
+        
+   
+
+      
+    
+
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+
+ <script>
+       /* ========= BACK BUTTON CONTROL BOILERPLATE ========= */
+
+       // 1. Add fake history entry for this page
+       history.pushState(null, null, location.href);
+
+       // 2. Handle browser back button
+       window.onpopstater= function () {
+
+           // 👇 PASTE YOUR CONTROLLER API HERE
+           window.location.href = "/previousPage";
+
+       };
+
+    /* ================================================ */
+</script>
+</body>
+</html>

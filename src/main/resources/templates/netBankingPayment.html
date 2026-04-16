@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>NetBanking Payment</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+    <style>
+        body {
+            background: linear-gradient(135deg, #eef2f7, #dbeafe);
+        }
+
+        .payment-card {
+            border-radius: 18px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
+            animation: slideUp 0.6s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .error-text {
+            font-size: 0.85rem;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+
+            <div class="card payment-card p-4">
+
+                <!-- Header -->
+                <div class="text-center mb-4">
+                    <i class="bi bi-bank text-primary fs-1"></i>
+                    <h3 class="fw-bold mt-2">NetBanking Payment</h3>
+                    <p class="text-muted">Enter your bank details to continue</p>
+                </div>
+
+                <!-- Order Summary -->
+                <div class="border rounded p-3 mb-4">
+                    <div class="d-flex justify-content-between">
+                        <span>Order Amount</span>
+                        <strong>₹2,199</strong>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <span>Delivery</span>
+                        <span class="text-success">FREE</span>
+                    </div>
+                    <hr>
+                    <div class="d-flex justify-content-between fs-5">
+                        <strong>Total Payable</strong>
+                        <strong class="text-primary">₹2,199</strong>
+                    </div>
+                </div>
+
+                <!-- NetBanking Form -->
+                <form th:action="@{/pay/netbanking}" method="post" onsubmit="return validateAccount()">
+
+                    <!-- Account Holder -->
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Account Holder Name</label>
+                        <input type="text" class="form-control" name="accountName"
+                               placeholder="Enter account holder name" required>
+                    </div>
+
+                    <!-- Account Number -->
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Account Number</label>
+                        <input type="password" class="form-control" id="accNo"
+                               name="accountNo" placeholder="Enter account number" required>
+                    </div>
+
+                    <!-- Re-enter Account Number -->
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Re-enter Account Number</label>
+                        <input type="password" class="form-control" id="reAccNo"
+                               placeholder="Re-enter account number" required>
+                        <div id="accError" class="text-danger error-text d-none">
+                            Account numbers do not match
+                        </div>
+                    </div>
+
+                    <!-- IFSC -->
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">IFSC Code</label>
+                        <input type="text" class="form-control" name="ifsc"
+                               placeholder="e.g. SBIN0001234"
+                               pattern="^[A-Z]{4}0[A-Z0-9]{6}$"
+                               required>
+                    </div>
+
+                    <!-- Bank -->
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Select Bank</label>
+                        <select class="form-select" name="bank" required>
+                            <option value="">-- Choose Bank --</option>
+                            <option value="SBI">State Bank of India</option>
+                            <option value="HDFC">HDFC Bank</option>
+                            <option value="ICICI">ICICI Bank</option>
+                            <option value="AXIS">Axis Bank</option>
+                            <option value="PNB">Punjab National Bank</option>
+                        </select>
+                    </div>
+
+                    <!-- Pay -->
+                    <button type="submit" class="btn btn-primary w-100 py-2 fs-5">
+                        <i class="bi bi-lock-fill"></i> Pay ₹2,199 Securely
+                    </button>
+
+                </form>
+
+                <!-- Footer -->
+                <div class="text-center mt-3 text-muted small">
+                    <i class="bi bi-shield-check text-success"></i>
+                    Your bank details are encrypted and safe
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    function validateAccount() {
+        const acc = document.getElementById("accNo").value;
+        const reAcc = document.getElementById("reAccNo").value;
+        const error = document.getElementById("accError");
+
+        if (acc !== reAcc) {
+            error.classList.remove("d-none");
+            return false;
+        }
+        error.classList.add("d-none");
+        return true;
+    }
+</script>
+
+</body>
+</html>

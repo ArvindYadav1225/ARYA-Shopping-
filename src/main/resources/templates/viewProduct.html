@@ -1,0 +1,683 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:fragment="layout(content)">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+
+<title>Yadav Shopping Application</title>
+
+<style>.search-wrapper {
+    max-width: 500px;
+}
+#hilights {
+    font-family: Inter;
+    font-size: 13px;
+}
+.top-row {
+    display: flex;          /* 🔥 keeps them in same line */
+    align-items: flex-start;
+    gap: 40px;
+}
+
+.left-rating {
+    min-width: 140px;
+    text-align: center;
+}
+
+.rating-bars {
+    min-width: 350px;
+}
+
+
+.hl-title {
+    font-weight: 500;
+    color: #878787;
+    display: block;
+    margin-bottom: 6px;
+}
+
+.hl-row {
+    display: grid;
+    grid-template-columns: 16px 120px auto; /* 👈 FIXED KEY WIDTH */
+    align-items: start;
+    line-height: 1.4;
+    margin-bottom: 4px;
+}
+
+.hl-key {
+    font-weight: 500;
+}
+
+.hl-value {
+    color: #212121;
+}
+
+
+.rating-container {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Left Rating */
+.left-rating {
+    min-width: 140px;
+    text-align: center;
+}
+
+.score {
+    font-size: 48px;
+    font-weight: bold;
+}
+
+.star {
+    color: #388e3c;
+}
+
+.sub-text {
+    font-size: 14px;
+    color: #666;
+}
+
+/* Rating Bars */
+.rating-bars {
+    min-width: 350px;
+}
+
+.bar-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+.bar {
+    flex: 1;
+    height: 6px;
+    background: #e0e0e0;
+    border-radius: 5px;
+}
+
+.fill {
+    height: 100%;
+    border-radius: 5px;
+}
+
+.green {
+    background: #388e3c;
+}
+
+.light-green {
+    background: #7cb342;
+}
+
+.orange {
+    background: #ffa000;
+}
+
+.red {
+    background: #d32f2f;
+}
+
+.count {
+    color: #777;
+    font-size: 13px;
+}
+
+/* Rating Circles */
+.rating-circles {
+    display: flex;
+    gap: 25px;
+    margin-top: 20px;     /* 🔽 pushes it downward */
+    justify-content: flex-start;
+}
+
+.circle {
+    text-align: center;
+}
+
+.circle-value {
+    width: 70px;
+    height: 70px;
+    border: 4px solid #388e3c;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    font-weight: bold;
+    color: #388e3c;
+}
+
+.circle-label {
+    margin-top: 6px;
+    font-size: 14px;
+}
+
+.part-1{
+ width:calc(100%*1 / 14);
+ flex:0 0 auto;
+}
+.part-2{
+ width:calc(100%*2 / 14);
+ flex:0 0 auto;
+}
+
+/* Input */
+.search-input {
+    height: 48px;
+    padding-left: 45px;
+    border-radius: 24px;
+    border: 1px solid #dfe1e5;
+    font-size: 16px;
+}
+
+.search-input:focus {
+    box-shadow: 0 1px 6px rgba(32,33,36,.28);
+    border-color: transparent;
+}
+
+/* Search Icon */
+.search-icon {
+    position: absolute;
+    top: 50%;
+    left: 15px;
+    transform: translateY(-50%);
+    color: #9aa0a6;
+    font-size: 18px;
+}
+
+/* Dropdown */
+/* =========================
+   SEARCH WRAPPER
+========================= */
+.search-wrapper {
+    position: relative;
+    gap: 8px;
+}
+
+/* =========================
+   SEARCH INPUT
+========================= */
+.search-input {
+    padding-left: 42px;
+    height: 44px;
+    border-radius: 50px;
+}
+
+/* =========================
+   SEARCH ICON
+========================= */
+.search-icon {
+    position: absolute;
+    left: 14px;
+    color: #70757a;
+    pointer-events: none;
+    z-index: 2;
+}
+
+.search-dropdown {
+    list-style: none;
+    padding: 8px 0;
+    margin: 0;
+
+    position: absolute;
+    top: 100%;              /* 👈 OPEN DOWN */
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+
+    background: #fff;
+    border: 1px solid #dfe1e5;
+    border-top: none;
+    border-radius: 0 0 24px 24px;
+
+    box-shadow: 0 4px 6px rgba(32,33,36,.28);
+
+    opacity: 0;
+    transform: translateY(-6px);
+    transition: all 0.15s ease-in-out;
+}
+
+/* SHOW DROPDOWN */
+.search-dropdown.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* =========================
+   DROPDOWN ITEMS
+========================= */
+.search-dropdown li {
+    display: flex;
+    align-items: center;
+    padding: 10px 16px;
+    cursor: pointer;
+    font-size: 15px;
+}
+
+/* HISTORY ICON */
+.search-dropdown li i {
+    margin-right: 12px;
+    color: #70757a;
+}
+
+/* HOVER EFFECT */
+.search-dropdown li:hover {
+    background-color: #f1f3f4;
+}
+
+/* Connect borders */
+.search-input.active {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+body{background:#eef3f7;
+
+
+
+
+
+
+
+}
+
+.slide-div{
+ position: fixed;
+        
+        margin-top:-17px;
+        right: -18%;
+        width: 18%;
+        height: 100vh;
+        background-color:black;
+        color:white;
+        transition: right 0.3s ease;
+       
+        z-index: 999;
+        display:flex;
+        flex-direction:column;
+        border-top-left-radius:20px;
+        align-items:left;
+        padding-left:30px;
+        gap:14px;
+}
+
+.slider-wrapper{
+    width:80vw;
+    height:25vw;
+    min-width:250px;
+    min-height:150px;
+    overflow:hidden;
+    border-radius:20px;
+    border:1px solid #ccc;
+    position:relative;
+}
+.slider-track{
+    display:flex;
+    width:100%;
+    height:100%;
+    transition:transform 1s ease-in-out;
+}
+.slide{
+    min-width:100%;
+    height:100%;
+    background-size:cover;
+    background-position:center;
+}
+
+
+
+.product-card{
+    background:#fff;
+    border-radius:20px;
+    padding:20px;
+    text-align:center;
+    height:100%;
+    box-shadow:0 10px 25px rgba(0,0,0,0.08);
+    transition:.3s;
+}
+.product-card:hover{transform:translateY(-5px);}
+.product-card img{
+    width:100%;
+    height:160px;
+    object-fit:contain;
+}
+.btn-custom{
+    background:#4cc3a5;
+    color:white;
+    border-radius:30px;
+}
+</style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<div class="container-fluid bg-light">
+<div class="row align-items-center">
+
+<img th:src="@{/images/yadavshoppinglogo.png}" style="height:60px;width:160px;background:transparent" class="bg-light ">
+
+
+<div class="col d-flex justify-content-center">
+    <form th:action="@{/search}" method="get" class="w-100 d-flex justify-content-center">
+        
+        <div class="search-wrapper position-relative d-flex align-items-center w-50">
+
+            <!-- Search Icon -->
+            <i class="bi bi-search search-icon"></i>
+
+            <!-- Input -->
+            <input type="search"
+                   id="searchInput"
+                   class="form-control search-input"
+                   placeholder="Search"
+                   name="searchValue"
+                   autocomplete="off">
+
+            <!-- Search Button -->
+            <button type="submit" class="btn btn-primary ms-2">
+                Search
+            </button>
+
+            <!-- Dropdown -->
+            <ul id="searchDropdown" class="search-dropdown d-none"></ul>
+
+        </div>
+    </form>
+</div>
+
+  
+
+
+<div class="col-auto">
+<form th:if="${session.mobile==null}" th:action="@{/login}" method="get">
+<button class="btn bg-light"><i class="bi bi-person-circle"></i> Login</button>
+</form>
+
+<div th:unless="${session.mobile==null}" class="position-relative">
+<i class="bi bi-cart3 fs-3"></i>
+<span class="badge bg-danger position-absolute top-0 start-100 translate-middle" th:if="${session.user!=null}" th:text="${#lists.size(session.user.cartItems)}"></span>
+<span class="badge bg-danger position-absolute top-0 start-100 translate-middle" th:unless="${session.user!=null}" >0</span>
+
+</div>
+</div>
+
+<div class="col-auto" th:if="${session.mobile!=null}">
+<i class="bi bi-bell-fill fs-4"></i>
+</div>
+
+<div class="col-auto">
+<form th:if="${session.mobile==null}" th:action="@{/signup}" method="get">
+<button class="btn bg-light "><i class="bi bi-person-circle"></i> Signup</button>
+</form>
+
+<button class="btn bg-light" th:unless="${session.mobile==null}" onclick="openSlide()"><i class="bi bi-three-dots-vertical fs-1" ></i></button>
+
+</div>
+
+</div>
+</div>
+<div class="container my-5">
+ <div class="row">
+  <div class="col-4  bg-light border border-secondary rounded-1"> 
+     <div  class="bg-warning" style="height:50vh">
+   <img th:src="@{/images/{img}.jpg(img=${product.image}) }" style="height:50vh;width:100%">
+    
+        
+     </div>
+      <div  style="height:50vh">
+   <img  class="bg-light" style="height:50vh;width:100%;border:none">
+    
+        
+     </div>
+      <div   style="height:50vh">
+   <img class="bg-light" style="height:50vh;width:100%;border:none">
+    
+        
+     </div>
+      <div >
+      <form th:action="@{'/addtocart/' + ${product.name}}" method="post">
+    <button class="btn bg-success  w-100">
+<i class="bi bi-cart-plus"></i> Add to Cart
+</button>
+</form>
+<form th:action="@{/buyProducts}">
+<button class="btn btn-warning w-100 mt-2"><i class="bi bi-lightning"></i> Buy</button></form>
+     </div>
+  </div>
+  <div class="col-8  bg-light">
+  <h5  style="font-family:Arial black" class="my-2" th:text="${product.name}"></h5>
+
+
+<div>
+ <span style="background-color:green;justify-content:center;color:white;padding-left:10px;padding-right:5px;border-radius:2px;"> 4.5★★★★☆ </span>
+ <span  style="display:inline; font-family: Inter;font-size: 13px;font-weight: 500;color: #878787;line-height: 1.4;margin-left:15px"> 20000 Rating and 10000 Reviews</span>
+ <p th:text="${product.about}"></p>
+  <h6  style="font-family:Arial black;display:inline"th:text="₹+${product.price}" ></h6>
+ <span class="text-muted text-decoration-line-through" th:text="₹+${product.oldprice}"></span>
+<span style="font-family:Arial black"class="text-success" th:text="${product.discount}+off"></span><br>
+<span style="font-family: Inter;font-size: 13px;font-weight: 500;margin-top:-5px">+ ₹86 Protect Promise Fee </span><br>
+<span style="font-family: Inter;font-size: 13px;font-weight: 500;margin-top:-5px">Secure Delivery by 23 January,Friday</span><br>
+<span style="font-family: Inter;font-size: 13px;font-weight: 1000">Available offers:</span><br>
+<span style="font-family: Inter;font-size: 13px;font-weight: 1000"><i class="bi bi-bank"></i> Bank Offer </span><span style="font-family: Inter;font-size: 13px;font-weight: 500">5% cashback on Axis Bank Flipkart Debit Card up to ₹750 <a  style="text-decoration: none" href="#">T&C</a></span><br>
+<span style="font-family: Inter;font-size: 13px;font-weight: 1000"><i class="bi bi-bank"></i> Bank Offer </span><span style="font-family: Inter;font-size: 13px;font-weight: 500">5% cashback on Flipkart Axis Bank Credit Card upto ₹4,000 per statement quarte <a style="text-decoration: none" href="#">T&C</a></span><br>
+<span style="font-family: Inter;font-size: 13px;font-weight: 1000"><i class="bi bi-bank"></i> Bank Offer </span><span style="font-family: Inter;font-size: 13px;font-weight: 500">5% cashback on Flipkart SBI Credit Card upto ₹4,000 per calendar quarter <a  style="text-decoration: none"href="#">T&C</a></span><br>
+<span style="font-family: Inter;font-size: 13px;font-weight: 1000"><i class="bi bi-gift"></i> Special Offer </span><span style="font-family: Inter;font-size: 13px;font-weight: 500">Get extra ₹7000 of <a  style="text-decoration: none"href="#">T&C</a></span><br>
+<span style="font-family: Inter;font-size: 13px;font-weight: 1000; "><a style="text-decoration: none;" href="#">View 2 more offers</a></span><br>
+<div id="hilights">
+    <span class="hl-title">Highlights</span>
+
+    <th:block th:each="entry : ${product.hilights}">
+        <div class="hl-row">
+            <i class="bi bi-dot text-muted"></i>
+            <span style="font-family: Inter;font-size: 13px;font-weight: 1000" class="hl-key" th:text="${entry.key}">Key</span>
+            <span class="hl-value" th:text="${entry.value}">Value</span>
+        </div>
+    </th:block>
+</div>
+
+
+
+
+
+
+<span style="display:inline-block; font-family: Inter;font-size: 18px;font-weight: 1000">Specifications</span><br>
+<span style="display:inline-block; font-family: Inter;font-size: 13px;font-weight: 700" >Warranty</span><br>
+<span style="display:inline; font-family: Inter;font-size: 13px;font-weight: 500;color: #878787;line-height: 1.4">Warranty Summary</span><pre style="display:inline-block">   </pre>
+<span style="display:inline; font-family: Inter;font-size: 13px;font-weight: 500">1 Year Manufacturer Warranty for Device and 6 Months for In-Box Accessories</span><br>
+<span style="display:inline; font-family: Inter;font-size: 13px;font-weight: 500;color: #878787;line-height: 1.4">Covered in Warranty</span><pre style="display:inline-block">   </pre>
+<span style="display:inline; font-family: Inter;font-size: 13px;font-weight: 500">
+Manufacturing Defects Onlys</span><br>
+<span style="display:inline; font-family: Inter;font-size: 13px;font-weight: 500;color: #878787;line-height: 1.4">Domestic Warranty</span><pre style="display:inline-block">   </pre>
+<span style="display:inline; font-family: Inter;font-size: 13px;font-weight: 500">
+1 Year</span><br>
+<span style="display:inline; font-family: Inter;font-size: 13px;font-weight: 500;color: #878787;line-height: 1.4">Warranty Period</span><pre style="display:inline-block">     </pre>
+<span style="display:inline; font-family: Inter;font-size: 13px;font-weight: 500">
+1 Year</span><br>
+<span style="display:inline;padding-top:5px;padding-bottom:5px;padding-left:8px;border-radius:4px"><button style="text-decoration: none;color:blue;width:100%;border:none" onclick="showDetails()">Product Details </button></span><br><br>
+   <div  style="display:none" id="otherdetails">
+   <th:block th:each="entry : ${product.otherDetails}">
+        <div class="hl-row">
+            <i class="bi bi-dot text-muted"></i>
+            <span style="font-family: Inter;font-size: 13px;font-weight: 1000" class="hl-key" th:text="${entry.key}"></span>
+            <span  style="font-family: Inter;font-size: 12px;font-weight: 500;margin-left:16px;" class="hl-value" th:text="${entry.value}"></span>
+         
+            
+        </div>
+    </th:block>
+    </div>
+<span style="display:inline; font-family:Arial black" >Rating and Reviews</span><br>
+ <div class="rating-container">
+
+    <!-- LEFT: Overall Rating -->
+   <div class="top-row">
+
+    <div class="left-rating">
+        <div class="score">4.6 <span class="star">★</span></div>
+        <div class="sub-text">50,538 Ratings &<br>2,778 Reviews</div>
+    </div>
+
+    <div class="rating-bars">
+        <div class="bar-row">
+            <span>5 ★</span>
+            <div class="bar"><div class="fill green" style="width:75%"></div></div>
+            <span class="count">37,755</span>
+        </div>
+        <div class="bar-row">
+            <span>4 ★</span>
+            <div class="bar"><div class="fill green" style="width:40%"></div></div>
+            <span class="count">8,458</span>
+        </div>
+        <div class="bar-row">
+            <span>3 ★</span>
+            <div class="bar"><div class="fill light-green" style="width:20%"></div></div>
+            <span class="count">1,533</span>
+        </div>
+        <div class="bar-row">
+            <span>2 ★</span>
+            <div class="bar"><div class="fill orange" style="width:15%"></div></div>
+            <span class="count">654</span>
+        </div>
+        <div class="bar-row">
+            <span>1 ★</span>
+            <div class="bar"><div class="fill red" style="width:25%"></div></div>
+            <span class="count">2,138</span>
+        </div>
+    </div>
+
+</div>
+
+
+    <!-- RIGHT: Circle Ratings -->
+    <div class="rating-circles">
+        <div class="circle">
+        
+            <div class="circle-value">4.5</div>
+            <div class="circle-label">Camera</div>
+        </div>
+        <div class="circle">
+            <div class="circle-value">3.8</div>
+            <div class="circle-label">Battery</div>
+        </div>
+        <div class="circle">
+            <div class="circle-value">4.7</div>
+            <div class="circle-label">Display</div>
+        </div>
+        <div class="circle">
+            <div class="circle-value">4.7</div>
+            <div class="circle-label">Design</div>
+        </div>
+    </div>
+
+</div>
+<div style="display:inline; font-family:Arial black"> People Rating : </div><br>
+<span style="display:inline-block; font-family: Inter;font-size: 16px;font-weight: 1000">Arvind Yadav:</span>
+<span style="background-color:green;justify-content:center;color:white;padding-left:10px;padding-right:5px;border-radius:2px;"> 5★ </span>
+<pre style="display:inline-block">     </pre><span  style="display:inline-block; font-family: Inter;font-size: 13px;font-weight: 500">Nice Product ,this product is 100% Good and Very efficient Working.</span>
+<br><br>
+
+
+ 
+</div>
+  </div>
+ </div>
+</div>
+<!-- SLIDER -->
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script type="text/javascript">
+function showDetails() {
+    const ele = document.getElementById("otherdetails");
+    const isHidden = window.getComputedStyle(ele).display === "none";
+
+    ele.style.display = isHidden ? "block" : "none";
+}
+const suggestions = /*[[${searchhistory}]]*/ [];
+
+const input = document.getElementById("searchInput");
+const dropdown = document.getElementById("searchDropdown");
+
+/* =========================
+   SHOW ALL ON CLICK
+========================= */
+input.addEventListener("focus", showAll);
+input.addEventListener("click", showAll);
+
+/* =========================
+   FILTER ON TYPE
+========================= */
+input.addEventListener("keyup", function () {
+    const value = this.value.toLowerCase();
+    dropdown.innerHTML = "";
+
+    const list = value === ""
+        ? suggestions
+        : suggestions.filter(item =>
+            item.toLowerCase().includes(value)
+          );
+
+    if (list.length === 0) {
+        hideDropdown();
+        return;
+    }
+
+    populate(list);
+    showDropdown();
+});
+
+/* =========================
+   FUNCTIONS
+========================= */
+
+function showAll() {
+    if (suggestions.length === 0) return;
+
+    dropdown.innerHTML = "";
+    populate(suggestions);
+    showDropdown();
+}
+
+function populate(list) {
+    list.forEach(item => {
+        const li = document.createElement("li");
+        li.innerHTML = `<i class="bi bi-clock-history"></i>${item}`;
+
+        li.onclick = () => {
+            input.value = item;
+            hideDropdown();
+        };
+
+        dropdown.appendChild(li);
+    });
+}
+
+function showDropdown() {
+    dropdown.classList.remove("d-none");
+    dropdown.classList.add("show");
+}
+
+function hideDropdown() {
+    dropdown.classList.add("d-none");
+    dropdown.classList.remove("show");
+}
+
+/* =========================
+   CLOSE ON OUTSIDE CLICK
+========================= */
+document.addEventListener("click", e => {
+    if (!e.target.closest(".search-wrapper")) {
+        hideDropdown();
+    }
+});
+</script>
+
+</body>
+</html>

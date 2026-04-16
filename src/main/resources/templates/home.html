@@ -1,0 +1,571 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:fragment="layout(content)">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+
+<title>Yadav Shopping Application</title>
+
+<style>.search-wrapper {
+    max-width: 500px;
+}
+@media (max-width: 768px) {
+    .desktop-only {
+        display: none;
+    }
+}
+.scroll-container {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;        /* enable horizontal scroll */
+    gap: 12px;               /* proper space between items */
+    padding: 8px 10px;
+}
+
+/* each item */
+.scroll-container > div {
+    flex: 0 0 auto;          /* prevent shrinking */
+    min-width: max-content;  /* fit content properly */
+}
+
+/* optional: style scrollbar (visible & clean) */
+.scroll-container::-webkit-scrollbar {
+    height: 6px;
+}
+
+.scroll-container::-webkit-scrollbar-thumb {
+    background: #999;
+    border-radius: 10px;
+}
+@media (max-width: 768px) {
+    body {
+        font-size: 10px;
+       
+    }
+     h5{
+     font-size:10px;
+        }
+       
+       
+}
+.part-1{
+ width:calc(100%*1 / 14);
+ flex:0 0 auto;
+}
+.part-2{
+ width:calc(100%*2 / 14);
+ flex:0 0 auto;
+}
+
+/* Input */
+.search-input {
+    height: 48px;
+    padding-left: 45px;
+    border-radius: 24px;
+    border: 1px solid #dfe1e5;
+    font-size: 16px;
+}
+
+.search-input:focus {
+    box-shadow: 0 1px 6px rgba(32,33,36,.28);
+    border-color: transparent;
+}
+
+/* Search Icon */
+.search-icon {
+    position: absolute;
+    top: 50%;
+    left: 15px;
+    transform: translateY(-50%);
+    color: #9aa0a6;
+    font-size: 18px;
+}
+
+/* Dropdown */
+/* =========================
+   SEARCH WRAPPER
+========================= */
+.search-wrapper {
+    position: relative;
+    gap: 8px;
+}
+
+/* =========================
+   SEARCH INPUT
+========================= */
+.search-input {
+    padding-left: 42px;
+    height: 44px;
+    border-radius: 50px;
+}
+
+/* =========================
+   SEARCH ICON
+========================= */
+.search-icon {
+    position: absolute;
+    left: 14px;
+    color: #70757a;
+    pointer-events: none;
+    z-index: 2;
+}
+
+.search-dropdown {
+    list-style: none;
+    padding: 8px 0;
+    margin: 0;
+
+    position: absolute;
+    top: 100%;              /* 👈 OPEN DOWN */
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+
+    background: #fff;
+    border: 1px solid #dfe1e5;
+    border-top: none;
+    border-radius: 0 0 24px 24px;
+
+    box-shadow: 0 4px 6px rgba(32,33,36,.28);
+
+    opacity: 0;
+    transform: translateY(-6px);
+    transition: all 0.15s ease-in-out;
+}
+
+/* SHOW DROPDOWN */
+.search-dropdown.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* =========================
+   DROPDOWN ITEMS
+========================= */
+.search-dropdown li {
+    display: flex;
+    align-items: center;
+    padding: 10px 16px;
+    cursor: pointer;
+    font-size: 15px;
+}
+
+/* HISTORY ICON */
+.search-dropdown li i {
+    margin-right: 12px;
+    color: #70757a;
+}
+
+/* HOVER EFFECT */
+.search-dropdown li:hover {
+    background-color: #f1f3f4;
+}
+
+/* Connect borders */
+.search-input.active {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+body{background:#eef3f7;
+
+
+
+
+
+
+
+}
+@media (max-width: 768px) {
+    
+ }
+
+.slide-div{
+ position: fixed;
+        
+        margin-top:-17px;
+        right: -18%;
+        width: 18%;
+        height: 100vh;
+        background-color:#BEBEBE;
+        color:black;
+        transition: right 0.3s ease;
+       
+        z-index: 999;
+        display:flex;
+        flex-direction:column;
+        border-top-left-radius:20px;
+        align-items:left;
+        padding-left:30px;
+        gap:14px;
+}
+
+.slider-wrapper{
+    width:80vw;
+    height:25vw;
+    min-width:250px;
+    min-height:150px;
+    overflow:hidden;
+    border-radius:20px;
+    border:1px solid #ccc;
+    position:relative;
+}
+.slider-track{
+    display:flex;
+    width:100%;
+    height:100%;
+    transition:transform 1s ease-in-out;
+}
+.slide{
+    min-width:100%;
+    height:100%;
+    background-size:cover;
+    background-position:center;
+}
+
+
+
+.product-card{
+    background:#fff;
+    border-radius:20px;
+    padding:20px;
+    text-align:center;
+    height:100%;
+    box-shadow:0 10px 25px rgba(0,0,0,0.08);
+    transition:.3s;
+}
+.product-card:hover{transform:translateY(-5px);}
+.product-card img{
+    width:100%;
+    height:160px;
+    object-fit:contain;
+}
+.btn-custom{
+    background:#4cc3a5;
+    color:white;
+    border-radius:30px;
+}
+</style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<div class="container-fluid bg-light" >
+<div class="row align-items-center" >
+
+
+
+<div class="col d-flex justify-content-center">
+    <form th:action="@{/search}" method="get" class="w-100 d-flex justify-content-center">
+        
+        <div class="search-wrapper position-relative d-flex align-items-center w-50">
+
+            <!-- Search Icon -->
+            <i class="bi bi-search search-icon"></i>
+
+            <!-- Input -->
+            <input type="search"
+                   id="searchInput"
+                   class="form-control search-input"
+                   placeholder="Search"
+                   name="searchValue"
+                   autocomplete="off">
+
+            <!-- Search Button -->
+            <button type="submit" class="btn btn-primary ms-2" style="width:70px;height:25px">
+                Search
+            </button>
+
+            <!-- Dropdown -->
+            <ul id="searchDropdown" class="search-dropdown d-none"></ul>
+
+        </div>
+    </form>
+</div>
+
+  
+
+
+<div class="col-auto">
+<form th:if="${session.mobile==null}" th:action="@{/login}" method="get">
+<button class="btn bg-light"><i class="bi bi-person-circle"></i> Login</button>
+</form>
+<div class=>
+<div id="slideDiv" class="slide-div" >
+<span  onclick="closeSlide()"> <i class="bi bi-x" style="font-size:30px;margin-left:200px;justify-content:right"></i></span>
+<a><h6><i class="bi bi-house"></i>    Home</h6></a>
+
+<a ><h6><i class="bi bi-info-circle"></i>  About</h6></a>
+<a th:href="@{/myOrders}" style="color:black;text-decoration:none"><h6><i class="bi bi-receipt"></i>  My Orders</h6></a>
+<a th:href="@{/cartpage}" style="color:black;text-decoration:none"><h6><i class="bi bi-cart"></i>  Cart Items</h6></a>
+<a><h6> <i class="bi bi-geo-alt-fill"></i>  Update Location</h6></a>
+<a><h6><i class="bi bi-pencil-square"></i>  Update mobile Num.</h6></a>
+<a><h6><i class="bi bi-truck"></i>  Processing order</h6></a>
+<a><h6><i class="bi-x-circle-fill"></i>  Cancelled Order</h6></a>
+<a th:href="@{/logout}" style="text-decoration:none;color:black"><h6 style="text-align:center;margin-top:15px"> <i class="bi bi-box-arrow-right"></i> Logout</h6></a>
+</div>
+</div>
+<div th:unless="${session.mobile==null}" class="position-relative" id="cartdiv">
+<a th:href="@{/cartpage}"><i class="bi bi-cart3 fs-3"></i></a>
+<span class="badge bg-danger position-absolute top-0 start-100 translate-middle" th:if="${session.user!=null}" th:text="${#lists.size(session.user.cartItems)}"></span>
+<span class="badge bg-danger position-absolute top-0 start-100 translate-middle" th:unless="${session.user!=null}" >0</span>
+
+
+</div>
+</div>
+
+<div   class="col-auto" th:if="${session.mobile!=null}">
+
+<span   id="myorder" th:if="${session.user!=null}" style="margin-left:10px;padding-left:10px;color:red"> <a th:href="@{/myOrders}" style="text-decoration:none;font-family:arial black;color:red">MyOrders</a></span>
+</div>
+
+<div class="col-auto">
+<form th:if="${session.mobile==null}" th:action="@{/signup}" method="get">
+<button class="btn bg-light "><i class="bi bi-person-circle"></i> Signup</button>
+</form>
+
+<button class="btn bg-light" th:unless="${session.mobile==null}" onclick="openSlide()"><i class="bi bi-three-dots-vertical fs-1" ></i></button>
+
+</div>
+
+</div>
+</div>
+
+<!-- SLIDER -->
+<div class="container-fluid py-4 d-flex justify-content-center">
+<div class="slider-wrapper">
+<div class="slider-track" id="sliderTrack"></div>
+</div>
+</div>
+<div class="container-fluid py-3 mt-n3 bg-light scroll-container">
+
+  <div class="part-1"><b><i class="bi bi-sort-up"></i> Sort</b></div>
+
+  <div class="part-1"><i class="bi bi-filter"></i> <b>Filter</b></div>
+
+  <div class="part-1">
+    <a th:href="@{/home}" style="text-decoration:none;color:black">
+      <b><i class="bi bi-browser-edge"></i> All</b>
+    </a>
+  </div>
+
+  <div class="part-1">
+    <a th:href="@{/search?searchValue=Mobile}" style="text-decoration:none;color:black">
+      <b><i class="bi bi-phone"></i> Mobiles</b>
+    </a>
+  </div>
+
+  <div class="part-1">
+    <a th:href="@{/search?searchValue=Laptops}" style="text-decoration:none;color:black">
+      <b><i class="bi bi-laptop"></i> Laptops</b>
+    </a>
+  </div>
+
+  <div class="part-2">
+    <a th:href="@{/search?searchValue=CameraSpakers}" style="text-decoration:none;color:black">
+      <b><i class="bi bi-camera"></i><i class="bi bi-speaker"></i> Camera & Speakers</b>
+    </a>
+  </div>
+
+  <div class="part-2">
+    <a th:href="@{/search?searchValue=Electronics}" style="text-decoration:none;color:black">
+      <b><i class="bi bi-power"></i><i class="bi bi-plug"></i> Electronics Product</b>
+    </a>
+  </div>
+
+  <div class="part-2">
+    <a th:href="@{/search?searchValue=BlutoothEarbuds}" style="text-decoration:none;color:black">
+      <b><i class="bi bi-bluetooth"></i><i class="bi bi-earbuds"></i> Bluetooth & Earbuds</b>
+    </a>
+  </div>
+
+  <div class="part-2">
+    <a th:href="@{/search?searchValue=ClothShoose}" style="text-decoration:none;color:black">
+      <b><i class="bi bi-person"></i> Clothes & Shoes</b>
+    </a>
+  </div>
+
+  <div class="part-1">
+    <a th:href="@{/search?searchValue=FoodDrinks}" style="text-decoration:none;color:black">
+      <b>Foods/Drinks</b>
+    </a>
+  </div>
+
+</div>
+<!-- PRODUCTS -->
+<div class="container py-5">
+<div class="row g-4">
+
+<div class="col-6 col-md-4 col-lg-3" th:each="product : ${products}">
+<div class="product-card d-flex flex-column h-100">
+
+<img th:src="@{/images/{img}.jpg(img=${product.image})}"
+     th:attr="data-name=${product.name}"
+     style="cursor:pointer"
+     onclick="viewProductDetails(this)">
+
+<h5  style="font-family:Arial black" id="productname" th:text="${product.name}"></h5>
+
+<div class="price">
+<span style="font-family:Arial black" th:text="₹+${product.price}"></span>
+<span class="text-muted text-decoration-line-through" th:text="₹+${product.oldprice}"></span>
+<span style="font-family:Arial black"  class="text-success" th:text="${product.discount}+off"></span>
+</div>
+
+<p class="desktop-only" th:text="${product.about}" style="font-family:Arrus bt"></p>
+
+<div class="mt-auto">
+<form th:action="@{'/addtocart/' + ${product.name}}" method="post">
+<button class="btn bg-success  w-100" style="font-family:Arial black" id="addtocart">
+<i class="bi bi-cart-plus" ></i> Add
+</button>
+</form>
+<form th:action="@{/buyProducts}">
+<input type="hidden" name="productName" th:value="${product.name}">
+<button class="btn btn-warning w-100 mt-2" style="font-family:Arial black" id="buy"><i class="bi bi-lightning" ></i> Buy</button></form>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script th:inline="javascript">
+document.addEventListener("DOMContentLoaded", function(){
+let images = /*[[${images}]]*/ [];
+const track = document.getElementById("sliderTrack");
+
+images.forEach(img=>{
+let d=document.createElement("div");
+d.className="slide";
+d.style.backgroundImage="url('/images/"+img+"')";
+track.appendChild(d);
+});
+
+let first = track.firstElementChild.cloneNode(true);
+track.appendChild(first);
+
+let index=0;
+setInterval(()=>{
+index++;
+track.style.transform="translateX(-"+index*100+"%)";
+track.style.transition="1s";
+
+if(index===images.length){
+setTimeout(()=>{
+track.style.transition="none";
+track.style.transform="translateX(0)";
+index=0;
+},1000);
+}
+},4000);
+});
+
+const suggestions = /*[[${searchhistory}]]*/ [];
+
+const input = document.getElementById("searchInput");
+const dropdown = document.getElementById("searchDropdown");
+
+/* =========================
+   SHOW ALL ON CLICK
+========================= */
+input.addEventListener("focus", showAll);
+input.addEventListener("click", showAll);
+
+/* =========================
+   FILTER ON TYPE
+========================= */
+input.addEventListener("keyup", function () {
+    const value = this.value.toLowerCase();
+    dropdown.innerHTML = "";
+
+    const list = value === ""
+        ? suggestions
+        : suggestions.filter(item =>
+            item.toLowerCase().includes(value)
+          );
+
+    if (list.length === 0) {
+        hideDropdown();
+        return;
+    }
+
+    populate(list);
+    showDropdown();
+});
+
+/* =========================
+   FUNCTIONS
+========================= */
+function showAll() {
+    if (suggestions.length === 0) return;
+
+    dropdown.innerHTML = "";
+    populate(suggestions);
+    showDropdown();
+}
+
+function populate(list) {
+    list.forEach(item => {
+        const li = document.createElement("li");
+        li.innerHTML = `<i class="bi bi-clock-history"></i>${item}`;
+
+        li.onclick = () => {
+            input.value = item;
+            hideDropdown();
+        };
+
+        dropdown.appendChild(li);
+    });
+}
+
+function showDropdown() {
+    dropdown.classList.remove("d-none");
+    dropdown.classList.add("show");
+}
+
+function hideDropdown() {
+    dropdown.classList.add("d-none");
+    dropdown.classList.remove("show");
+}
+
+/* =========================
+   CLOSE ON OUTSIDE CLICK
+========================= */
+document.addEventListener("click", e => {
+    if (!e.target.closest(".search-wrapper")) {
+        hideDropdown();
+    }
+});
+
+function openSlide(){
+	document.getElementById("slideDiv").style.right="0%";
+}
+function closeSlide(){
+	document.getElementById("slideDiv").style.right="-18%";
+}
+
+function viewProductDetails(img) {
+    const productName = img.dataset.name;
+    window.location.href =
+        '/viewProduct?productName=' + encodeURIComponent(productName);
+}
+
+
+
+</script>
+<script>
+window.history.pushState(null, null, window.location.href);
+
+window.onpopstate = function () {
+    window.location.href = "/home";
+};
+</script>
+
+</body>
+</html>
