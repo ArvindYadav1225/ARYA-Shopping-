@@ -62,6 +62,43 @@ public class EcommerciaAppController {
 	private CartRepository cr ;
 	@Autowired
 	private OrderRepositery or;
+	@GetMapping("/")
+	
+		public String home2(Model m ,HttpSession session,HttpServletRequest request) {
+			Cookie[] cookies=request.getCookies();
+			if(cookies!=null) {
+				for(Cookie cookie:cookies) {
+					if("mobile".equals(cookie.getName())) {
+						session.setAttribute("mobile", cookie.getValue());
+						break;
+					}
+				}
+			}
+			String mobile=(String)session.getAttribute("mobile");
+			 User u;
+			if(mobile!=null){
+		    u=ur.getByMobile(mobile);
+		    session.setAttribute("user", u);
+		   List<String> history= sr.findTop10ByUserOrderByCreatedAtDesc(u)
+	        .stream()
+	        .map(SearchHistory::getSearchText)
+	        .toList();
+
+	       m.addAttribute("searchhistory", history);
+		   
+			}
+			//System.out.println("yadavji");
+			List<String> images=new ArrayList<>();
+			images.add("dis2.jpg");
+			images.add("dis3.jpg");
+			images.add("dis4.jpg");
+			images.add("dis5.jpg");
+			images.add("dis6.jpg");
+		    if(!m.containsAttribute("products"))
+			m.addAttribute("products",pr.findAll());
+			m.addAttribute("images",images);
+		return "home";
+	}
 	@GetMapping("/home")
 	public String home(Model m ,HttpSession session,HttpServletRequest request) {
 		Cookie[] cookies=request.getCookies();
