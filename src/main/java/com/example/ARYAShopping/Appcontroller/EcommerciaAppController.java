@@ -3,6 +3,7 @@ package com.example.ARYAShopping.Appcontroller;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -254,7 +255,7 @@ public class EcommerciaAppController {
 		//}
 		
 	      history.add(searchValue);
-	     history= history.reversed();
+	      Collections.reverse(history);
 	     while(history.size()>10) history.remove(history.size()-1);
 //		Stack<String> search=new Stack<>();
 //		search=u.getSearchhistory();
